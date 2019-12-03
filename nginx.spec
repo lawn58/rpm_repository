@@ -1,10 +1,10 @@
-#
+
 %define nginx_home %{_localstatedir}/cache/nginx
 %define nginx_user nginx
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-# distribution specific definitions
+
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
 
 %if 0%{?rhel}  == 5
@@ -58,7 +58,7 @@ BuildRequires: perl
 BuildRequires: libGeoIP-devel
 %endif
 
-# end of distribution specific definitions
+
 
 %define main_version                 1.10.1
 %define main_release                 1%{?dist}.ngx
@@ -284,7 +284,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
     $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nginx-debug
 
 %if %{use_systemd}
-# install systemd-specific files
+
 %{__mkdir} -p $RPM_BUILD_ROOT%{_unitdir}
 %{__install} -m644 %SOURCE8 \
     $RPM_BUILD_ROOT%{_unitdir}/nginx.service
@@ -294,13 +294,13 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__install} -m755 %SOURCE9 \
     $RPM_BUILD_ROOT%{_libexecdir}/initscripts/legacy-actions/nginx/upgrade
 %else
-# install SYSV init stuff
+
 %{__mkdir} -p $RPM_BUILD_ROOT%{_initrddir}
 %{__install} -m755 nginx.init $RPM_BUILD_ROOT%{_initrddir}/nginx
 %{__install} -m755 nginx-debug.init $RPM_BUILD_ROOT%{_initrddir}/nginx-debug
 %endif
 
-# install log rotation stuff
+
 %{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 %if 0%{?suse_version}
 %{__install} -m 644 -p %{SOURCE10} \
@@ -401,7 +401,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0644,root,root) %{_libdir}/nginx/modules/ngx_http_js_module-debug.so
 
 %pre
-# Add the "nginx" user
+
 getent group %{nginx_group} >/dev/null || groupadd -r %{nginx_group}
 getent passwd %{nginx_user} >/dev/null || \
     useradd -r -g %{nginx_group} -s /sbin/nologin \
@@ -409,7 +409,7 @@ getent passwd %{nginx_user} >/dev/null || \
 exit 0
 
 %post
-# Register the nginx service
+
 if [ $1 -eq 1 ]; then
 %if %{use_systemd}
     /usr/bin/systemctl preset nginx.service >/dev/null 2>&1 ||:
@@ -418,7 +418,7 @@ if [ $1 -eq 1 ]; then
     /sbin/chkconfig --add nginx
     /sbin/chkconfig --add nginx-debug
 %endif
-    # print site info
+    
     cat <<BANNER
 ----------------------------------------------------------------------
 
@@ -433,7 +433,7 @@ Commercial subscriptions for nginx are available on:
 ----------------------------------------------------------------------
 BANNER
 
-    # Touch and set permisions on default log files on installation
+   
 
     if [ -d %{_localstatedir}/log/nginx ]; then
         if [ ! -e %{_localstatedir}/log/nginx/access.log ]; then
